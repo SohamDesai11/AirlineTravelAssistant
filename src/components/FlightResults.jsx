@@ -36,6 +36,17 @@ const FlightResults = ({ flights }) => {
     return a.code || a.iata || a.id || "??";
   };
 
+  // Function to get the travel class 
+  const getTravelClass = (travelClass) => {
+    const classMap = {
+      1: "Economy",
+      2: "Premium Economy",
+      3: "Business",
+      4: "First Class",
+    };
+    return classMap[travelClass] || "Economy";
+  };
+
   return (
     <div className="flight-results">
       <h2 className="results-title">Available Flights ({flights.length})</h2>
@@ -52,6 +63,7 @@ const FlightResults = ({ flights }) => {
 
         const departureCode = getAirportCode(firstLeg?.departure_airport);
         const arrivalCode = getAirportCode(lastLeg?.arrival_airport);
+        
 
         const departureTime = extractTime(
           firstLeg?.departure_airport?.time || firstLeg?.departure_time
@@ -82,7 +94,7 @@ const FlightResults = ({ flights }) => {
         // -------------------------------
         const aircraftName =
           firstLeg?.airplane || "Aircraft information unavailable";
-        const travelClass = firstLeg?.travel_class || "Economy";
+        const travelClass = group.travel_class || "1";
         const legroom = firstLeg?.legroom || "N/A";
 
         const formattedDuration =

@@ -7,10 +7,11 @@ app.use(cors());
 app.use(express.json());
 
 app.get("/api/flights", async (req, res) => {
-  const { from, to, departure, returnDate, passengers, tripType } = req.query;
+  const { from, to, departure, returnDate, passengers, tripType, travel_class} = req.query;
   console.log("Fetching flights:", req.query);
 
   try {
+    const serpTravelClass = travel_class;
     const response = await axios.get("https://serpapi.com/search", {
       params: {
         engine: "google_flights",
@@ -19,6 +20,7 @@ app.get("/api/flights", async (req, res) => {
         outbound_date: departure,
         return_date: tripType === "round" ? returnDate : undefined,
         passengers,
+        travel_class: serpTravelClass,
         hl: "en",
         gl: "us",
         api_key: "0ab784c3a40c6a61f286c3baec46bb9c94e6a397d54ed3c2fc255543e155421a",
@@ -34,6 +36,11 @@ app.get("/api/flights", async (req, res) => {
       response.data.other_flights || 
       response.data.flights || 
       [];
+    
+      flights.forEach(f => {
+        f.travel_class = travel_class;
+       
+      });
 
     console.log("Flights array length:", flights.length);
     

@@ -10,9 +10,10 @@ const FlightSearch = ({ onSearch }) => {
   const [departure, setDeparture] = useState("");
   const [returnDate, setReturnDate] = useState("");
   const [passengers, setPassengers] = useState(1);
-
+  const [travelClass, setTravelClass] = useState("1");
   const [fromSuggestions, setFromSuggestions] = useState([]);
   const [toSuggestions, setToSuggestions] = useState([]);
+
 
   // Load airport data once
   const airports = data;
@@ -57,7 +58,7 @@ const FlightSearch = ({ onSearch }) => {
       alert("Please fill out From, To, and Departure date.");
       return;
     }
-    onSearch({ from, to, departure, returnDate, passengers, tripType });
+    onSearch({ from, to, departure, returnDate, passengers, tripType, travel_class: travelClass  });
   };
 
   return (
@@ -81,6 +82,20 @@ const FlightSearch = ({ onSearch }) => {
           />
           One Way
         </label>
+
+        <label className="travel-class-label">
+    <select
+      value={travelClass}
+      onChange={(e) => setTravelClass(e.target.value)}
+      className="class-select"
+    >
+      <option value="1">Economy</option>
+      <option value="2">Premium Economy</option>
+      <option value="3">Business</option>
+      <option value="4">First Class</option>
+    </select>
+  </label>
+
       </div>
 
       <div className="form-row">
