@@ -1,0 +1,179 @@
+import React, { useState, useEffect } from "react";
+import "./FlightSearch.css";
+import data from "../data/airportCodes.json";
+
+
+const FlightSearch = ({ onSearch }) => {
+  const [tripType, setTripType] = useState("round");
+  const [from, setFrom] = useState("");
+  const [to, setTo] = useState("");
+  const [departure, setDeparture] = useState("");
+  const [returnDate, setReturnDate] = useState("");
+  const [passengers, setPassengers] = useState(1);
+
+  const [fromSuggestions, setFromSuggestions] = useState([]);
+  const [toSuggestions, setToSuggestions] = useState([]);
+
+  // Load airport data once
+  const airports = data;
+
+  const handleFromChange = (e) => {
+    const value = e.target.value;
+    setFrom(value);
+
+    if (value.length > 1) {
+      const filtered = airports.filter(
+        (a) =>
+          a.city.toLowerCase().includes(value.toLowerCase()) ||
+          a.name.toLowerCase().includes(value.toLowerCase()) ||
+          a.code.toLowerCase().includes(value.toLowerCase())
+      );
+      setFromSuggestions(filtered.slice(0, 6)); // Limit to 6 suggestions
+    } else {
+      setFromSuggestions([]);
+    }
+  };
+
+  const handleToChange = (e) => {
+    const value = e.target.value;
+    setTo(value);
+
+    if (value.length > 1) {
+      const filtered = airports.filter(
+        (a) =>
+          a.city.toLowerCase().includes(value.toLowerCase()) ||
+          a.name.toLowerCase().includes(value.toLowerCase()) ||
+          a.code.toLowerCase().includes(value.toLowerCase())
+      );
+      setToSuggestions(filtered.slice(0, 6));
+    } else {
+      setToSuggestions([]);
+    }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!from || !to || !departure) {
+      alert("Please fill out From, To, and Departure date.");
+      return;
+    }
+    onSearch({ from, to, departure, returnDate, passengers, tripType });
+  };
+
+  return (
+    <form className="flight-form" onSubmit={handleSubmit}>
+      <div className="trip-type">
+        <label>
+          <input
+            type="radio"
+            name="trip"
+            checked={tripType === "round"}
+            onChange={() => setTripType("round")}
+          />
+          Round Trip
+        </label>
+        <label>
+          <input
+            type="radio"
+            name="trip"
+            checked={tripType === "oneway"}
+            onChange={() => setTripType("oneway")}
+          />
+          One Way
+        </label>
+      </div>
+
+      <div className="form-row">
+        {/* FROM */}
+        <div className="input-wrapper">
+          <label className="input-label">From</label>
+          <input
+            type="text"
+            placeholder="Departure City"
+            value={from}
+            onChange={handleFromChange}
+          />
+          {fromSuggestions.length > 0 && (
+            <ul className="suggestions">
+              {fromSuggestions.map((a) => (
+                <li
+                  key={a.code}
+                  onClick={() => {
+                    setFrom(a.code);
+                    setFromSuggestions([]);
+                  }}
+                >
+                  {a.city} ({a.code}) — {a.name}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
+        {/* TO */}
+        <div className="input-wrapper">
+          <label className="input-label">To</label>
+          <input
+            type="text"
+            placeholder="Destination City"
+            value={to}
+            onChange={handleToChange}
+          />
+          {toSuggestions.length > 0 && (
+            <ul className="suggestions">
+              {toSuggestions.map((a) => (
+                <li
+                  key={a.code}
+                  onClick={() => {
+                    setTo(a.code);
+                    setToSuggestions([]);
+                  }}
+                >
+                  {a.city} ({a.code}) — {a.name}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      
+      {/* DEPARTURE DATE */}
+  <div className="input-wrapper">
+    <label className="input-label">Departure</label>
+    <input
+      type="date"
+      value={departure}
+      onChange={(e) => setDeparture(e.target.value)}
+    />
+  </div>
+
+  {/* RETURN DATE */}
+  <div className="input-wrapper">
+    <label className="input-label">Return</label>
+    <input
+      type="date"
+      value={returnDate}
+      onChange={(e) => setReturnDate(e.target.value)}
+      disabled={tripType === "oneway"}
+    />
+  </div>
+
+  {/* PASSENGERS */}
+  <div className="input-wrapper">
+    <label className="input-label">Passengers</label>
+    <input
+      type="number"
+      min="1"
+      value={passengers}
+      onChange={(e) => setPassengers(e.target.value)}
+    />
+  </div>
+</div>
+
+      <button type="submit" className="search-btn">
+        Search Flights
+      </button>
+    </form>
+  );
+};
+
+export default FlightSearch;

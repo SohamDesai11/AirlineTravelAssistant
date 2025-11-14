@@ -1,0 +1,245 @@
+.flight-results {
+  width: 90%;
+  margin: 20px auto;
+  font-family: Arial, sans-serif;
+}
+
+
+
+.results-title {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.no-flights-text {
+  text-align: center;
+  margin-top: 30px;
+  font-size: 1.1rem;
+}
+
+.flight-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px 30px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  font-family: "Inter", sans-serif;
+
+}
+
+.flight-card:hover {
+  transform: scale(1.01);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+}
+
+/* Left side layout */
+.flight-left {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Spread airline info and time section */
+  width: 100%;
+}
+
+.airline-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.airline-logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.plane-icon {
+  font-size: 24px;
+}
+
+.airline-name {
+  font-weight: 600;
+  font-size: 1rem;
+  font-family: "Inter", sans-serif;
+}
+
+.flight-number {
+  color: gray;
+  font-size: 0.9rem;
+}
+
+/* Time section */
+.flight-time-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1; /* Take available space */
+  gap: 60px;
+}
+
+.time-block {
+  text-align: center;
+}
+
+.flight-time {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.airport-code {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.flight-path {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.line {
+  width: 80px;
+  height: 3px;
+  background-color: black;
+  margin: 0 5px;
+  border-radius: 2px;
+}
+
+.circle {
+  width: 10px;
+  height: 10px;
+  border: 2px solid black;
+  border-radius: 50%;
+}
+
+.circle.filled {
+  background-color: black;
+}
+
+.duration-text {
+  position: absolute;
+  top: -25px;
+  left: 30%;
+  font-size: 0.8rem;
+  color: #333;
+  
+}
+
+/* Right side (price + button) */
+.flight-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.price-box {
+  border: 2px solid #00a65a;
+  border-radius: 8px;
+  text-align: center;
+  padding: 8px 16px;
+  margin-bottom: 8px;
+}
+
+.best-deal {
+  color: #00a65a;
+  font-size: 0.75rem;
+  font-weight: bold;
+}
+
+.price {
+  font-size: 1.4rem;
+  color: #00a65a;
+  font-weight: bold;
+}
+
+.per-person {
+  font-size: 0.8rem;
+  color: gray;
+}
+
+.select-btn {
+  background-color: #00a65a;
+  color: white;
+  font-weight: bold;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.select-btn:hover {
+  background-color: #008b4a;
+}
+
+.layover-text {
+  position: absolute;
+  top: 25px;          /* Moves the text BELOW the path */
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.85rem;
+  color: #444;
+  white-space: nowrap;
+}
+
+
+/* Expand/collapse button */
+.aircraft-toggle {
+  margin-top: 6px;
+  font-size: 0.85rem;
+  color: #0066cc;
+  cursor: pointer;
+  user-select: none;
+  font-weight: 500;
+}
+
+.aircraft-toggle:hover {
+  text-decoration: underline;
+}
+
+/* Expanded aircraft info container */
+.aircraft-info {
+  margin-top: 10px;
+  padding: 12px;
+  background: #fafafa;
+  border: 1px solid #e3e3e3;
+  border-radius: 8px;
+}
+
+.aircraft-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: #222;
+}
+
+.aircraft-details {
+  font-size: 0.85rem;
+  color: #555;
+  margin-bottom: 8px;
+}
+
+/* Amenities list */
+.amenities-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.amenities-list li {
+  font-size: 0.85rem;
+  color: #444;
+  padding: 3px 0;
+}
+
+.amenities-list li::before {
+  content: "•";
+  margin-right: 6px;
+  color: #888;
+}
+

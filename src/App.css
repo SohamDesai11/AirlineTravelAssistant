@@ -1,0 +1,56 @@
+/* General Page Layout */
+body {
+  margin: 0;
+  font-family: "Poppins", sans-serif;
+  background: linear-gradient(to bottom, #4a90e2, #ffffff);
+  color: #333;
+}
+
+/* Main App Container */
+.app-container {
+  min-height: 100vh;
+  text-align: center;
+  padding: 40px 20px;
+}
+
+/* Title */
+.app-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 40px;
+  color: #000000;
+}
+
+/* Loading Text */
+.loading-text {
+  margin-top: 20px;
+  font-size: 1.1rem;
+  color: #333;
+  font-weight: 500;
+}
+
+/* Flight Search Section */
+.flight-search {
+  width: 1174px;
+  height: 287px;
+  margin: 0 auto 40px auto;
+  background-color: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+}
+
+/* Flight Results */
+.flight-results {
+  width: 90%;
+  margin: 0 auto;
+  text-align: left;
+}
+
+/* Center the “Find Your Perfect Flight” heading */
+h1 {
+  font-size: 2.5rem;
+  color: #004aad;
+  font-weight: bold;
+  margin-top: 40px;
+}

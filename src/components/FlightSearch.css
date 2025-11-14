@@ -1,0 +1,108 @@
+.flight-form {
+  width: 1174px;
+  height: 287px;
+  margin: 50px auto;          /* centers it horizontally */
+  padding: 20px 30px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background-color: #fff;
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-family: "Inter", sans-serif;
+}
+
+.trip-type {
+  display: flex;
+  justify-content: left;
+  gap: 30px;
+  margin-bottom: 20px;
+  font-size: 16px;
+}
+
+.input-label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  margin-right: 160px;
+}
+
+.trip-type input[type="radio"] {
+  margin-right: 8px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.input-wrapper {
+  position: relative;
+}
+
+input[type="text"],
+input[type="date"],
+input[type="number"] {
+  
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+input:disabled {
+  background: #f0f0f0;
+}
+
+.suggestions {
+  position: absolute;
+  top: 100%; /* pushes it right below the input */
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  list-style: none;
+  margin: 4px 0 0 0;
+  padding: 0;
+  max-height: 180px;
+  overflow-y: auto;
+  z-index: 1000; /* ensure it appears above other fields */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.suggestions li {
+  padding: 10px 12px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s ease;
+}
+
+.suggestions li:hover {
+  background-color: #f0f7ff;
+}
+
+.search-btn {
+  width: 100%;
+  padding: 12px;
+  background-color: #007bff;
+  border: none;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.search-btn:hover {
+  background-color: #0056b3;
+}
+
+
