@@ -40,12 +40,15 @@ function App() {
 
   return (
     <>
+    <nav className="navbar">
       <div className="logo-container">
         <img src="/6192144.png" alt="Flight Booker Logo"/>
         <span className="logo-text">Skybooker</span>
       </div>
+    </nav>
     <div className="app-container">
       <h1 className="app-title">Find Your Perfect Flight</h1>
+      <p className="small-paragraph">Book flights to anywhere in the world with the best price and service</p>
       <FlightSearch onSearch={handleSearch} />
       {loading ? <p className="text-center mt-4">Loading...</p> : <FlightResults flights={flights} />}
     </div>
