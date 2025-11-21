@@ -64,4 +64,45 @@ app.get("/api/flights", async (req, res) => {
   }
 });
 
+// Simple in-memory shopping cart
+const cart = [];
+
+// Add flight to cart
+app.post("/api/cart", (req, res) => {
+  try {
+    const item = req.body;
+    if (!item) return res.status(400).json({ success: false, error: "No cart item provided" });
+    // Assign an id server-side if one isn't provided
+    if (!item.id) {
+      item.id = `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
+    }
+    cart.push(item);
+    console.log("Added to cart:", item);
+    res.json({ success: true, cart });
+  } catch (err) {
+    console.error("Error adding to cart:", err);
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// Get cart contents
+app.get("/api/cart", (req, res) => {
+  res.json({ success: true, cart });
+});
+
+// Remove item from cart by id
+app.delete("/api/cart/:id", (req, res) => {
+  try {
+    const { id } = req.params;
+    const index = cart.findIndex(c => c.id === id);
+    if (index === -1) return res.status(404).json({ success: false, error: "Item not found" });
+    const removed = cart.splice(index, 1)[0];
+    console.log("Removed from cart:", removed);
+    res.json({ success: true, cart });
+  } catch (err) {
+    console.error("Error removing from cart:", err);
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 app.listen(5000, () => console.log("✅ Server running on port 5000"));

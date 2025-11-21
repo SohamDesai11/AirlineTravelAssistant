@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import "./FlightResults.css";
 
-const FlightResults = ({ flights, adults = 1, children = 0 }) => {
+const FlightResults = ({ flights, adults = 1, children = 0, addToCart }) => {
   const [expandedIndex, setExpandedIndex] = useState(null);
 
   // Total passengers (adults + children)
@@ -173,7 +173,27 @@ const FlightResults = ({ flights, adults = 1, children = 0 }) => {
                 </div>
                 <div className="per-person">Total • {getPassengerText()}</div>
               </div>
-              <button className="select-btn">Select Flight</button>
+              <button
+                className="select-btn"
+                onClick={() => {
+                  if (typeof addToCart === 'function') {
+                    const payload = {
+                      airline,
+                      flightNumber,
+                      legs,
+                      passengers: totalPassengers,
+                      basePrice: parseFloat(basePrice) || 0,
+                      total_price: parseFloat(totalPrice) || 0,
+                      travelClass,
+                    };
+                    addToCart(payload);
+                  } else {
+                    console.warn('addToCart not provided');
+                  }
+                }}
+              >
+                Select Flight
+              </button>
             </div>
           </div>
         );
