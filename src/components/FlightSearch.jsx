@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import "./FlightSearch.css";
 import data from "../data/airportCodes.json";
 
-
 const FlightSearch = ({ onSearch }) => {
   const [tripType, setTripType] = useState("round");
   const [from, setFrom] = useState("");
@@ -13,7 +12,9 @@ const FlightSearch = ({ onSearch }) => {
   const [travelClass, setTravelClass] = useState("1");
   const [fromSuggestions, setFromSuggestions] = useState([]);
   const [toSuggestions, setToSuggestions] = useState([]);
-
+  const [children, setChildren] = useState(0);
+  const [adults, setAdults] = useState(1);
+  const [showPassengerPopup, setShowPassengerPopup] = useState(false);
 
   // Load airport data once
   const airports = data;
@@ -58,7 +59,42 @@ const FlightSearch = ({ onSearch }) => {
       alert("Please fill out From, To, and Departure date.");
       return;
     }
-    onSearch({ from, to, departure, returnDate, passengers, tripType, travel_class: travelClass  });
+    onSearch({ 
+      from, 
+      to, 
+      departure, 
+      returnDate, 
+      passengers: adults + children, 
+      adults,
+      children,
+      tripType, 
+      travel_class: travelClass  
+    });
+  };
+
+  const handleAdultIncrement = () => {
+    setAdults(prev => prev + 1);
+  };
+
+  const handleAdultDecrement = () => {
+    setAdults(prev => prev > 1 ? prev - 1 : 1);
+  };
+
+  const handleChildrenIncrement = () => {
+    setChildren(prev => prev + 1);
+  };
+
+  const handleChildrenDecrement = () => {
+    setChildren(prev => prev > 0 ? prev - 1 : 0);
+  };
+
+  const getPassengerSummary = () => {
+    const total = adults + children;
+    let summary = `${total} Passenger${total > 1 ? 's' : ''}`;
+    if (children > 0) {
+      summary += ` (${adults} Adult${adults > 1 ? 's' : ''}, ${children} Child${children > 1 ? 'ren' : ''})`;
+    }
+    return summary;
   };
 
   return (
@@ -84,18 +120,17 @@ const FlightSearch = ({ onSearch }) => {
         </label>
 
         <label className="travel-class-label">
-    <select
-      value={travelClass}
-      onChange={(e) => setTravelClass(e.target.value)}
-      className="class-select"
-    >
-      <option value="1">Economy</option>
-      <option value="2">Premium Economy</option>
-      <option value="3">Business</option>
-      <option value="4">First Class</option>
-    </select>
-  </label>
-
+          <select
+            value={travelClass}
+            onChange={(e) => setTravelClass(e.target.value)}
+            className="class-select"
+          >
+            <option value="1">Economy</option>
+            <option value="2">Premium Economy</option>
+            <option value="3">Business</option>
+            <option value="4">First Class</option>
+          </select>
+        </label>
       </div>
 
       <div className="form-row">
@@ -151,38 +186,100 @@ const FlightSearch = ({ onSearch }) => {
           )}
         </div>
       
-      {/* DEPARTURE DATE */}
-  <div className="input-wrapper">
-    <label className="input-label">Departure</label>
-    <input
-      type="date"
-      value={departure}
-      onChange={(e) => setDeparture(e.target.value)}
-    />
-  </div>
+        {/* DEPARTURE DATE */}
+        <div className="input-wrapper">
+          <label className="input-label">Departure</label>
+          <input
+            type="date"
+            value={departure}
+            onChange={(e) => setDeparture(e.target.value)}
+          />
+        </div>
 
-  {/* RETURN DATE */}
-  <div className="input-wrapper">
-    <label className="input-label">Return</label>
-    <input
-      type="date"
-      value={returnDate}
-      onChange={(e) => setReturnDate(e.target.value)}
-      disabled={tripType === "oneway"}
-    />
-  </div>
+        {/* RETURN DATE */}
+        <div className="input-wrapper">
+          <label className="input-label">Return</label>
+          <input
+            type="date"
+            value={returnDate}
+            onChange={(e) => setReturnDate(e.target.value)}
+            disabled={tripType === "oneway"}
+          />
+        </div>
 
-  {/* PASSENGERS */}
-  <div className="input-wrapper">
-    <label className="input-label">Passengers</label>
-    <input
-      type="number"
-      min="1"
-      value={passengers}
-      onChange={(e) => setPassengers(e.target.value)}
-    />
-  </div>
-</div>
+        {/* PASSENGERS */}
+        <div className="input-wrapper">
+          <label className="input-label">Passengers</label>
+          <div 
+            className="passenger-input"
+            onClick={() => setShowPassengerPopup(true)}
+          >
+            {getPassengerSummary()}
+          </div>
+          
+          {showPassengerPopup && (
+            <div className="passenger-popup">
+              <div className="passenger-popup-content">
+                <div className="passenger-type">
+                  <div className="passenger-label">
+                    <span className="type">Adults</span>
+                    <span className="age">(12+ years)</span>
+                  </div>
+                  <div className="passenger-controls">
+                    <button 
+                      type="button" 
+                      className="passenger-btn"
+                      onClick={handleAdultDecrement}
+                    >
+                      -
+                    </button>
+                    <span className="passenger-count">{adults}</span>
+                    <button 
+                      type="button" 
+                      className="passenger-btn"
+                      onClick={handleAdultIncrement}
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+                
+                <div className="passenger-type">
+                  <div className="passenger-label">
+                    <span className="type">Children</span>
+                    <span className="age">(2-11 years)</span>
+                  </div>
+                  <div className="passenger-controls">
+                    <button 
+                      type="button" 
+                      className="passenger-btn"
+                      onClick={handleChildrenDecrement}
+                    >
+                      -
+                    </button>
+                    <span className="passenger-count">{children}</span>
+                    <button 
+                      type="button" 
+                      className="passenger-btn"
+                      onClick={handleChildrenIncrement}
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+                
+                <button 
+                  type="button" 
+                  className="done-btn"
+                  onClick={() => setShowPassengerPopup(false)}
+                >
+                  Done
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
 
       <button type="submit" className="search-btn">
         Search Flights
