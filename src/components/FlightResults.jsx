@@ -73,10 +73,7 @@ const FlightResults = ({ flights, adults = 1, children = 0 }) => {
     <div className="flight-results">
       <h2 className="results-title">Available Flights ({flights.length})</h2>
 
-      <div className="passenger-summary">
-        Showing prices for {getPassengerText()} ({totalPassengers} total)
-      </div>
-
+    
       {flights.map((group, index) => {
         const legs = group.flights || [];
         const firstLeg = legs[0];
@@ -128,23 +125,21 @@ const FlightResults = ({ flights, adults = 1, children = 0 }) => {
                   >
                     {expandedIndex === index ? "Hide details" : "View details"}
                   </div>
+                  {expandedIndex === index && (
+                    <div className="aircraft-info">
+                      <div className="aircraft-title">{aircraft}</div>
+                      <div className="aircraft-details">
+                        {getTravelClass(travelClass)} • {legroom} legroom
+                      </div>
+                      <ul className="amenities-list">
+                        <li>Wi-Fi available</li>
+                        <li>In-seat power & USB</li>
+                        <li>On-demand entertainment</li>
+                      </ul>
+                    </div>
+                  )}
                 </div>
               </div>
-
-              {/* Expanded Details */}
-              {expandedIndex === index && (
-                <div className="aircraft-info">
-                  <div className="aircraft-title">{aircraft}</div>
-                  <div className="aircraft-details">
-                    {getTravelClass(travelClass)} • {legroom} legroom
-                  </div>
-                  <ul className="amenities-list">
-                    <li>Wi-Fi available</li>
-                    <li>In-seat power & USB</li>
-                    <li>On-demand entertainment</li>
-                  </ul>
-                </div>
-              )}
 
               {/* Times & Route */}
               <div className="flight-time-section">

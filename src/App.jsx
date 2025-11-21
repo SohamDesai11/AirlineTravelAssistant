@@ -8,8 +8,9 @@ import FlightResults from "./components/FlightResults.jsx";
 function App() {
   const [flights, setFlights] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [searchPassengers, setSearchPassengers] = useState({ adults: 1, children: 0 });
 
-  const handleSearch = async ({ from, to, departure, returnDate, passengers, tripType, travel_class }) => {
+  const handleSearch = async ({ from, to, departure, returnDate, passengers, adults = 1, children = 0, tripType, travel_class }) => {
     setLoading(true);
 
     // 🧩 Add your console.log here:
@@ -31,6 +32,10 @@ function App() {
       console.log("API Response:", res.data);
 
       setFlights(res.data.flights || []);
+      // Store the passenger counts sent from the search form (if provided)
+      if (typeof passengers === 'number' || typeof adults === 'number' || typeof children === 'number') {
+        setSearchPassengers({ adults: adults || 1, children: children || 0 });
+      }
     } catch (error) {
       console.error("Error fetching flights:", error);
     } finally {
@@ -50,7 +55,13 @@ function App() {
       <h1 className="app-title">Find Your Perfect Flight</h1>
       <p className="small-paragraph">Book flights to anywhere in the world with the best price and service</p>
       <FlightSearch onSearch={handleSearch} />
-      {loading ? <p className="text-center mt-4">Loading...</p> : <FlightResults flights={flights} />}
+      {loading ? <p className="text-center mt-4">Loading...</p> : (
+        <FlightResults
+          flights={flights}
+          adults={searchPassengers.adults}
+          children={searchPassengers.children}
+        />
+      )}
     </div>
     </>
   );
