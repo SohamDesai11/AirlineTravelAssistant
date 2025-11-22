@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import "./App.css";
-
 import FlightSearch from "./components/FlightSearch.jsx";
 import FlightResults from "./components/FlightResults.jsx";
 
@@ -10,188 +9,223 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [searchPassengers, setSearchPassengers] = useState({ adults: 1, children: 0 });
   const [cart, setCart] = useState([]);
-  const [viewMode, setViewMode] = useState("home"); // 'home' or 'cart'
+  const [viewMode, setViewMode] = useState("home");
 
-  const handleSearch = async ({ from, to, departure, returnDate, passengers, adults = 1, children = 0, tripType, travel_class }) => {
+  const handleSearch = async (params) => {
+    const { from, to, departure, returnDate, adults = 1, children = 0, tripType, travel_class } = params;
     setLoading(true);
-
-    // 🧩 Add your console.log here:
-    console.log("Searching flights from", from, "to", to, "on", departure, "return:", returnDate, "passengers:", passengers, "tripType:", tripType, "travel_class:", travel_class);
-
     try {
       const res = await axios.get("http://localhost:5000/api/flights", {
-    params: { 
-      from, 
-      to, 
-      departure, 
-      returnDate, 
-      passengers, 
-      tripType,
-      travel_class},
-  });
-
-      // 🧩 Add another console.log to inspect the response:
-      console.log("API Response:", res.data);
-
+        params: { from, to, departure, returnDate, passengers: adults + children, tripType, travel_class },
+      });
       setFlights(res.data.flights || []);
-      // Store the passenger counts sent from the search form (if provided)
-      if (typeof passengers === 'number' || typeof adults === 'number' || typeof children === 'number') {
-        setSearchPassengers({ adults: adults || 1, children: children || 0 });
-      }
-    } catch (error) {
-      console.error("Error fetching flights:", error);
+      setSearchPassengers({ adults, children });
+    } catch (err) {
+      alert("No flights found");
     } finally {
       setLoading(false);
     }
   };
 
-  // Fetch cart from server
   const fetchCart = async () => {
     try {
       const res = await axios.get("http://localhost:5000/api/cart");
-      if (res?.data?.cart) setCart(res.data.cart);
-    } catch (err) {
-      console.error("Failed to fetch cart:", err.message || err);
-    }
+      setCart(res.data.cart || []);
+    } catch (err) { /* ignore */ }
   };
 
-  // Add item to cart optimistically (so UI works even if server is down)
-  const addToCart = async (flight) => {
-    try {
-      // Ensure an id exists for remove operations
-      const item = { ...flight };
-      if (!item.id) item.id = `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
-      // optimistic update
-      setCart(prev => [...prev, item]);
-      setViewMode("cart");
-      // attempt to persist on server; don't block the UI
-      axios.post("http://localhost:5000/api/cart", item).catch((err) => {
-        console.warn("Server add to cart failed (cart kept locally):", err.message || err);
-      });
-    } catch (err) {
-      console.error("Failed to add to cart:", err.message || err);
-    }
-  };
-
-  // Remove item from cart (optimistic; also tries server delete)
-  const removeFromCart = async (id) => {
-    try {
-      setCart(prev => prev.filter(item => item.id !== id));
-      // try server delete
-      axios.delete(`http://localhost:5000/api/cart/${id}`).catch(err => {
-        console.warn('Server delete failed (local cart updated):', err.message || err);
-      });
-    } catch (err) {
-      console.error('Failed to remove from cart:', err.message || err);
-    }
-  };
-
-  // load cart on mount
-  useEffect(() => {
-    // fetch current cart
-    fetchCart();
-    // set initial viewMode based on URL
-    if (window.location.pathname === "/cart") setViewMode("cart");
-
-    // listen for back/forward navigation
-    const onPop = () => {
-      if (window.location.pathname === "/cart") setViewMode("cart");
-      else setViewMode("home");
+  const addToCart = async (fullFlightGroup) => {
+    const item = {
+      id: `cart-${Date.now()}`,
+      ...fullFlightGroup,
+      passengerAdults: searchPassengers.adults,
+      passengerChildren: searchPassengers.children,
     };
+    setCart(prev => [...prev, item]);
+    setViewMode("cart");
+    window.history.pushState({}, "", "/cart");
+    axios.post("http://localhost:5000/api/cart", item).catch(() => {});
+  };
+
+  const removeFromCart = (id) => {
+    setCart(prev => prev.filter(i => i.id !== id));
+    axios.delete(`http://localhost:5000/api/cart/${id}`).catch(() => {});
+  };
+
+  useEffect(() => {
+    fetchCart();
+    if (window.location.pathname === "/cart") setViewMode("cart");
+    const onPop = () => setViewMode(window.location.pathname === "/cart" ? "cart" : "home");
     window.addEventListener("popstate", onPop);
     return () => window.removeEventListener("popstate", onPop);
   }, []);
 
+  // ROBUST HELPERS (works with any API format)
+  const getAirportCode = (airport) => {
+    if (!airport) return "??";
+    return airport.code || airport.iata || airport.icao || airport.id || "??";
+  };
+
+  const getTime = (leg) => {
+    if (!leg) return "N/A";
+    return (
+      leg.departure_time ||
+      leg.departure_airport?.time ||
+      leg.arrival_time ||
+      leg.arrival_airport?.time ||
+      "N/A"
+    );
+  };
+
+  const formatTime = (timeStr) => {
+    if (!timeStr || timeStr === "N/A") return "N/A";
+    try {
+      return timeStr.split("T")[1]?.slice(0, 5) ||
+             timeStr.split(" ")[1]?.slice(0, 5) ||
+             "N/A";
+    } catch {
+      return "N/A";
+    }
+  };
+
+  const formatDate = (timeStr) => {
+    if (!timeStr || timeStr === "N/A") return "N/A";
+    try {
+      const date = timeStr.split("T")[0];
+      return new Date(date).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
+    } catch {
+      return "N/A";
+    }
+  };
+
+  const formatDuration = (mins) => {
+    if (!mins) return "N/A";
+    const h = Math.floor(mins / 60);
+    const m = mins % 60;
+    return `${h}h${m > 0 ? ` ${m}m` : ""}`;
+  };
+
+  const getPassengerText = () => {
+    const { adults, children } = searchPassengers;
+    const parts = [];
+    if (adults) parts.push(`${adults} Adult${adults > 1 ? "s" : ""}`);
+    if (children) parts.push(`${children} Child${children > 1 ? "ren" : ""}`);
+    return parts.join(", ") || "1 Adult";
+  };
+
+  const getClassName = (code) => ["Economy", "Premium Economy", "Business", "First Class"][Number(code) - 1] || "Economy";
+
   return (
     <>
-    <nav className="navbar">
-      <div className="logo-container">
-        <img src="/6192144.png" alt="Flight Booker Logo"/>
-        <span className="logo-text">Skybooker</span>
-      </div>
-      <button
-        className="cart-container"
-        type="button"
-        onClick={() => {
-          // navigate to cart page and update URL
-          window.history.pushState({}, '', '/cart');
-          setViewMode("cart");
-          if (!cart.length) fetchCart();
-        }}
-      >
-        <div className="cart-icon">🛒</div>
-        <div className="cart-count">{cart.length}</div>
-      </button>
-    </nav>
+      <nav className="navbar">
+        <div className="logo-container">
+          <img src="/6192144.png" alt="Skybooker" />
+          <span className="logo-text">Skybooker</span>
+        </div>
+        <button className="cart-container" onClick={() => { window.history.pushState({}, "", "/cart"); setViewMode("cart"); }}>
+          Cart  <span className="cart-count">{cart.length}</span>
+        </button>
+      </nav>
+
       <div className="app-container">
-      <h1 className="app-title">Find Your Perfect Flight</h1>
-      <p className="small-paragraph">Book flights to anywhere in the world with the best price and service</p>
-      {viewMode === "home" ? (
-        <>
-          <FlightSearch onSearch={handleSearch} />
-          {loading ? (
-            <p className="text-center mt-4">Loading...</p>
-          ) : (
-            <FlightResults
-              flights={flights}
-              adults={searchPassengers.adults}
-              children={searchPassengers.children}
-              addToCart={addToCart}
-            />
-          )}
-        </>
-      ) : (
-        // Cart page (separate view without search or results)
-        <div className="cart-page-wrapper">
-          <button className="back-btn" onClick={() => { window.history.pushState({}, '', '/'); setViewMode("home"); }}>← Back to Search</button>
-          <div className="cart-page">
-            <div className="cart-header">
-              <h2>Your Cart</h2>
-              <div className="cart-actions">
-                <button className="clear-btn" onClick={async () => {
-                  // optimistic clear: try server deletes if possible
-                  try {
-                    const ids = cart.map(c => c.id).filter(Boolean);
-                    await Promise.all(ids.map(id => axios.delete(`http://localhost:5000/api/cart/${id}`).catch(()=>{})));
-                  } catch (e) {
-                    // ignore server errors
-                  }
-                  setCart([]);
-                }}>Clear Cart</button>
-                <button className="checkout-btn" onClick={() => alert('Checkout placeholder')}>Checkout</button>
-              </div>
-            </div>
+        <h1 className="app-title">Find Your Perfect Flight</h1>
+        <p className="small-paragraph">Book flights to anywhere in the world with the best price and service</p>
 
-            <div className="cart-body">
-              <p className="cart-count-text">{cart.length} item{cart.length !== 1 ? 's' : ''}</p>
-              {cart.length === 0 ? (
-                <p className="empty-cart">No flights in cart yet.</p>
-              ) : (
-                <ul className="cart-list">
-                  {cart.map((c) => (
-                    <li key={c.id} className="cart-item">
-                      <button className="remove-x" onClick={() => removeFromCart(c.id)} aria-label={`Remove ${c.airline}`}>✕</button>
-                      <div className="cart-desc">
-                        <div className="cart-airline">{c.airline || 'Flight'}</div>
-                        <div className="cart-price">${(parseFloat(c.total_price) || parseFloat(c.basePrice) || 0).toFixed(2)}</div>
-                        <div className="cart-passengers">{c.passengers || ''}</div>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              )}
+        {viewMode === "home" ? (
+          <>
+            <FlightSearch onSearch={handleSearch} />
+            {loading ? <p>Loading...</p> : <FlightResults flights={flights} adults={searchPassengers.adults} children={searchPassengers.children} addToCart={addToCart} />}
+          </>
+        ) : (
+          <div className="cart-page-wrapper">
+            <button className="back-btn-modern" onClick={() => { window.history.pushState({}, "", "/"); setViewMode("home"); }}>
+              Back to Search
+            </button>
 
-              <div className="cart-footer">
-                <div className="subtotal">
-                  <span>Subtotal</span>
-                  <strong>${cart.reduce((s, c) => s + (parseFloat(c.total_price) || parseFloat(c.basePrice) || 0), 0).toFixed(2)}</strong>
+            <div className="cart-page-modern">
+              <div className="cart-header-modern">
+                <h2>Your Selected Flights ({cart.length})</h2>
+                <div className="cart-actions-modern">
+                  <button className="clear-btn-modern" onClick={() => setCart([])}>Clear Cart</button>
+                  <button className="checkout-btn-modern">Proceed to Checkout</button>
                 </div>
               </div>
+
+              {cart.length === 0 ? (
+                <div className="empty-cart-modern">
+
+                  <h3>Your cart is empty</h3>
+                </div>
+              ) : (
+                <>
+                  <div className="cart-items-modern">
+                    {cart.map((item) => {
+                      const legs = item.flights || item.legs || [];
+                      const firstLeg = legs[0] || {};
+                      const lastLeg = legs[legs.length - 1] || {};
+
+                      return (
+                        <div key={item.id} className="detailed-cart-flight">
+                          <div className="flight-summary-header">
+                            <div className="airline-info">
+                              {item.airline_logo && <img src={item.airline_logo} alt={item.airline || "Airline"} className="airline-logo" />}
+                              <div>
+                                <strong>{item.airline || item.company || "Airline"}</strong>
+                                <span className="flight-number"> • {firstLeg.flight_number || "N/A"}</span>
+                              </div>
+                            </div>
+                            <button className="remove-flight-btn" onClick={() => removeFromCart(item.id)}>Remove</button>
+                          </div>
+
+                          <div className="flight-route-timeline">
+                            <div className="timeline-point">
+                              <div className="time">{formatTime(getTime(firstLeg))}</div>
+                              <div className="airport">{getAirportCode(firstLeg.departure_airport) || getAirportCode(firstLeg.from)}</div>
+                            </div>
+
+                            <div className="timeline-connector">
+                              <div className="duration">{formatDuration(item.total_duration || firstLeg.duration)}</div>
+                              <div className="layover">
+                                {legs.length <= 1 ? "Non-stop" : `${legs.length - 1} stop${legs.length > 2 ? "s" : ""}`}
+                              </div>
+                            </div>
+
+                            <div className="timeline-point">
+                              <div className="time">{formatTime(getTime(lastLeg))}</div>
+                              <div className="airport">{getAirportCode(lastLeg.arrival_airport) || getAirportCode(lastLeg.to)}</div>
+                            </div>
+                          </div>
+
+                          <div className="flight-meta-info">
+                            <div className="meta-item"><strong>Date:</strong> {formatDate(getTime(firstLeg))}</div>
+                            <div className="meta-item"><strong>Passengers:</strong> {getPassengerText()}</div>
+                            <div className="meta-item"><strong>Class:</strong> {getClassName(item.travel_class || item.travelClass || "1")}</div>
+                          </div>
+
+                          <div className="flight-price-final">
+                            <strong>${parseFloat(item.total_price || item.price || 0).toFixed(2)}</strong>
+                            <small>Total for {searchPassengers.adults + searchPassengers.children} traveler{searchPassengers.adults + searchPassengers.children > 1 ? "s" : ""}</small>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  <div className="cart-total-summary">
+                    <div className="total-line">
+                      <span>Total Amount</span>
+                      <strong className="grand-total">
+                        ${cart.reduce((s, i) => s + parseFloat(i.total_price || i.price || 0), 0).toFixed(2)}
+                      </strong>
+                    </div>
+                    <div className="secure-badge">Secure • Best Price Guarantee</div>
+                  </div>
+                </>
+              )}
             </div>
           </div>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
     </>
   );
 }

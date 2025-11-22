@@ -186,7 +186,7 @@ const FlightResults = ({ flights, adults = 1, children = 0, addToCart }) => {
                       total_price: parseFloat(totalPrice) || 0,
                       travelClass,
                     };
-                    addToCart(payload);
+                    addToCart(group);
                   } else {
                     console.warn('addToCart not provided');
                   }

@@ -5,7 +5,6 @@
 }
 
 
-
 .results-title {
   text-align: center;
   margin-bottom: 20px;
@@ -124,10 +123,11 @@
 .duration-text {
   position: absolute;
   top: -25px;
-  left: 30%;
+  left: 50%;
+  transform: translateX(-50%);
   font-size: 0.8rem;
   color: #333;
-  
+  text-align: center;
 }
 
 /* Right side (price + button) */
