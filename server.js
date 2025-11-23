@@ -11,14 +11,19 @@ app.get("/api/flights", async (req, res) => {
   console.log("Fetching flights:", req.query);
 
   try {
+    // Map tripType from frontend to SerpAPI `type` parameter
+    // API expects: 1 = Round trip (default), 2 = One way, 3 = Multi-city
     const serpTravelClass = travel_class;
+    const serpType = tripType === "oneway" ? 2 : tripType === "multi" ? 3 : 1;
     const response = await axios.get("https://serpapi.com/search", {
       params: {
         engine: "google_flights",
         departure_id: from,
         arrival_id: to,
         outbound_date: departure,
-        return_date: tripType === "round" ? returnDate : undefined,
+        // Only include return_date when trip is round trip
+        return_date: serpType === 1 ? returnDate : undefined,
+        type: serpType,
         passengers,
         travel_class: serpTravelClass,
         hl: "en",
@@ -41,6 +46,52 @@ app.get("/api/flights", async (req, res) => {
         f.travel_class = travel_class;
        
       });
+
+    // If this was a round-trip search and the API indicates a token is required
+    // to fetch return-legs, attempt a follow-up request. Some SerpAPI flows
+    // return a `departure_token` or `return_token` either at top-level or
+    // inside individual flight objects.
+    if (serpType === 1) {
+      // Try to find a token in top-level response
+      const topLevelToken = response.data.return_token || response.data.departure_token || response.data.token || response.data.departureToken || response.data.returnToken;
+
+      // Otherwise, look inside flights for a token field
+      let flightToken = null;
+      for (const f of flights) {
+        if (f.return_token || f.departure_token || f.token || f.departureToken || f.returnToken) {
+          flightToken = f.return_token || f.departure_token || f.token || f.departureToken || f.returnToken;
+          break;
+        }
+      }
+
+      const followupToken = topLevelToken || flightToken;
+      if (followupToken) {
+        try {
+          console.log("Found follow-up token, fetching return legs with token:", followupToken);
+          const follow = await axios.get("https://serpapi.com/search", {
+            params: {
+              engine: "google_flights",
+              departure_token: followupToken,
+              hl: "en",
+              gl: "us",
+              api_key: "0ab784c3a40c6a61f286c3baec46bb9c94e6a397d54ed3c2fc255543e155421a",
+            },
+          });
+
+          const returnFlights = follow.data.best_flights || follow.data.other_flights || follow.data.flights || [];
+          // Tag return flights so frontend can differentiate if needed
+          returnFlights.forEach(r => { r.is_return = true; r.travel_class = travel_class; });
+
+          // Append return flights to the main flights array so they will be returned
+          flights.push(...returnFlights);
+          console.log("Appended return flights, new flights length:", flights.length);
+        } catch (err) {
+          console.warn("Follow-up request for return legs failed:", err.message);
+        }
+      } else {
+        console.log("No follow-up token found in initial response; returning initial flights only.");
+      }
+    }
 
     console.log("Flights array length:", flights.length);
     

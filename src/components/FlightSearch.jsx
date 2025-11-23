@@ -114,7 +114,10 @@ const FlightSearch = ({ onSearch }) => {
             type="radio"
             name="trip"
             checked={tripType === "oneway"}
-            onChange={() => setTripType("oneway")}
+            onChange={() => {
+              setTripType("oneway");
+              setReturnDate("");
+            }}
           />
           One Way
         </label>
