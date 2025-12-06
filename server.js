@@ -28,7 +28,7 @@ app.get("/api/flights", async (req, res) => {
         travel_class: serpTravelClass,
         hl: "en",
         gl: "us",
-        api_key: "0ab784c3a40c6a61f286c3baec46bb9c94e6a397d54ed3c2fc255543e155421a",
+        api_key: process.env.SERP_API_KEY,
       },
     });
 
@@ -74,7 +74,7 @@ app.get("/api/flights", async (req, res) => {
               departure_token: followupToken,
               hl: "en",
               gl: "us",
-              api_key: "0ab784c3a40c6a61f286c3baec46bb9c94e6a397d54ed3c2fc255543e155421a",
+              api_key: process.env.SERP_API_KEY,
             },
           });
 
