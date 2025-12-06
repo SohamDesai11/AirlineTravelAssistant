@@ -51,7 +51,9 @@ function App() {
 
   const removeFromCart = (id) => {
     setCart(prev => prev.filter(i => i.id !== id));
-    axios.delete(`${BACKEND_URL}/api/cart/${id}`).catch(() => {});
+    axios.delete(`${BACKEND_URL}/api/cart/${id}`).catch(() => 
+      
+      {});
   };
 
   useEffect(() => {

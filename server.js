@@ -3,7 +3,20 @@ import axios from "axios";
 import cors from "cors";
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: [
+    'http://localhost:5173', // Local development
+    'http://localhost:3000', // Alternative local port
+    'https://your-vercel-app.vercel.app' // Your Vercel domain
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+
+
+
 app.use(express.json());
 
 app.get("/api/flights", async (req, res) => {
