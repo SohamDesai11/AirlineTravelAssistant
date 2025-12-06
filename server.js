@@ -16,7 +16,6 @@ app.use(cors({
 
 
 
-
 app.use(express.json());
 
 app.get("/api/flights", async (req, res) => {
@@ -24,7 +23,7 @@ app.get("/api/flights", async (req, res) => {
   console.log("Fetching flights:", req.query);
 
   try {
-    // Map tripType from frontend to SerpAPI `type` parameter.
+    // Map tripType from frontend to SerpAPI `type` parameter
     // API expects: 1 = Round trip (default), 2 = One way, 3 = Multi-city
     const serpTravelClass = travel_class;
     const serpType = tripType === "oneway" ? 2 : tripType === "multi" ? 3 : 1;
