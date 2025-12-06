@@ -4,6 +4,8 @@ import "./App.css";
 import FlightSearch from "./components/FlightSearch.jsx";
 import FlightResults from "./components/FlightResults.jsx";
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
 function App() {
   const [flights, setFlights] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -15,7 +17,7 @@ function App() {
     const { from, to, departure, returnDate, adults = 1, children = 0, tripType, travel_class } = params;
     setLoading(true);
     try {
-      const res = await axios.get("http://localhost:5000/api/flights", {
+      const res = await axios.get(`${BACKEND_URL}/api/flights`, {
         params: { from, to, departure, returnDate, passengers: adults + children, tripType, travel_class },
       });
       setFlights(res.data.flights || []);
@@ -29,7 +31,7 @@ function App() {
 
   const fetchCart = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/cart");
+      const res = await axios.get(`${BACKEND_URL}/api/cart`);
       setCart(res.data.cart || []);
     } catch (err) { /* ignore */ }
   };
@@ -44,12 +46,12 @@ function App() {
     setCart(prev => [...prev, item]);
     setViewMode("cart");
     window.history.pushState({}, "", "/cart");
-    axios.post("http://localhost:5000/api/cart", item).catch(() => {});
+    axios.post(`${BACKEND_URL}/api/cart`, item).catch(() => {});
   };
 
   const removeFromCart = (id) => {
     setCart(prev => prev.filter(i => i.id !== id));
-    axios.delete(`http://localhost:5000/api/cart/${id}`).catch(() => {});
+    axios.delete(`${BACKEND_URL}/api/cart/${id}`).catch(() => {});
   };
 
   useEffect(() => {
