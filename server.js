@@ -5,7 +5,7 @@ import cors from "cors";
 const app = express();
 app.use(cors({
   origin: [
-    'http://localhost:5173', // Local development
+    'http://localhost:5173', // Local development.
     'http://localhost:3000', // Alternative local port
     'https://your-vercel-app.vercel.app' // Your Vercel domain
   ],
