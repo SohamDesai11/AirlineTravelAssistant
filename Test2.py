@@ -66,7 +66,7 @@ try:
         By.XPATH, "//label[contains(., 'Departure') or contains(., 'Date')]/following-sibling::input"
     )
     departure_input.clear()
-    departure_input.send_keys("2025-11-30")
+    departure_input.send_keys("2025-12-25")
     time.sleep(1)
 
     # Cabin class selection - simplified version assuming a <select> element
