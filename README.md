@@ -1,10 +1,10 @@
-✈️ Airline Travel Assistant
+**✈️ Airline Travel Assistant**
 
 A modern, user-friendly flight search platform built with React and a Node.js/Express backend. This project allows users to search flights, view prices, select flights, and add them to a cart—similar to popular platforms like Google Flights or Expedia.
 
+**🚀 Features**
 
-🚀 Features
-🔍 Flight Search
+**🔍 Flight Search**
 
 - Search by origin, destination, departure date, and optional return date
 
@@ -12,22 +12,22 @@ A modern, user-friendly flight search platform built with React and a Node.js/Ex
 
 - Choose travel class and number of passengers
 
-📄 Flight Results
-
+**📄 Flight Results
+**
 - Clean, modern UI modeled after real airline platforms
 
 - Shows airline, duration, stops, price, and class
 
 - Fast and responsive design
-
-🛒 Cart System
+**
+🛒 Cart System**
 
 - Add selected flights to cart
 
 - View full flight summary (details + pricing)
 
 
-🧠 Backend Integration
+**🧠 Backend Integration**
 
 - Express server acts as a proxy to SerpAPI (Google Flights engine)
 
@@ -35,7 +35,7 @@ A modern, user-friendly flight search platform built with React and a Node.js/Ex
 
 - Secure API key stored using environment variables
 
-🤖 Automated Testing (Selenium)
+**🤖 Automated Testing (Selenium)**
 
 - Selenium scripts validate:
 
@@ -44,8 +44,8 @@ A modern, user-friendly flight search platform built with React and a Node.js/Ex
 - Flight selection added to cart
 
 
-🏗️ Tech Stack
-Frontend
+**🏗️ Tech Stack**
+**Frontend**
 
 - React + Vite
 
@@ -53,7 +53,7 @@ Frontend
 
 - Modern responsive UI
 
-Backend
+**Backend**
 
 - Node.js & Express
 
@@ -63,8 +63,12 @@ Backend
 
 - Environment variable support (.env)
 
-Testing
-
+**Testing
+**
 - Selenium WebDriver
 
-= Firefox (GeckoDriver)
+- Firefox (GeckoDriver)
+
+
+
+
