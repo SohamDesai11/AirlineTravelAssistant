@@ -3,16 +3,7 @@ import axios from "axios";
 import cors from "cors";
 
 const app = express();
-app.use(cors({
-  origin: [
-    'http://localhost:5173', // Local development.
-    'http://localhost:3000', // Alternative local port
-    'https://your-vercel-app.vercel.app' // Your Vercel domain
-  ],
-  credentials: true,
-  methods: ['GET', 'POST', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+app.use(cors());
 
 
 
@@ -40,7 +31,7 @@ app.get("/api/flights", async (req, res) => {
         travel_class: serpTravelClass,
         hl: "en",
         gl: "us",
-        api_key: process.env.SERP_API_KEY,
+        api_key: '0ab784c3a40c6a61f286c3baec46bb9c94e6a397d54ed3c2fc255543e155421a',
       },
     });
 
@@ -86,7 +77,7 @@ app.get("/api/flights", async (req, res) => {
               departure_token: followupToken,
               hl: "en",
               gl: "us",
-              api_key: process.env.SERP_API_KEY,
+              api_key: '0ab784c3a40c6a61f286c3baec46bb9c94e6a397d54ed3c2fc255543e155421a',
             },
           });
 
