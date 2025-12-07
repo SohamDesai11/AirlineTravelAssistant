@@ -2,6 +2,11 @@ import React, { useState, useEffect } from "react";
 import "./FlightSearch.css";
 import data from "../data/airportCodes.json";
 
+// FlightSearch component
+// - Handles search inputs for from/to airports, dates, passengers and class
+// - Provides auto-suggestions for airports using local `airportCodes.json`
+// - Calls `onSearch` prop with a normalized params object when submitted
+
 const FlightSearch = ({ onSearch }) => {
   const [tripType, setTripType] = useState("round");
   const [from, setFrom] = useState("");
@@ -16,14 +21,16 @@ const FlightSearch = ({ onSearch }) => {
   const [adults, setAdults] = useState(1);
   const [showPassengerPopup, setShowPassengerPopup] = useState(false);
 
-  // Load airport data once
+  // Load airport data once from bundled JSON.
   const airports = data;
 
+  // When user types in the "From" field: update value and show suggestions
   const handleFromChange = (e) => {
     const value = e.target.value;
     setFrom(value);
 
     if (value.length > 1) {
+      // Filter by city, name or code and limit results for usability
       const filtered = airports.filter(
         (a) =>
           a.city.toLowerCase().includes(value.toLowerCase()) ||
@@ -36,6 +43,7 @@ const FlightSearch = ({ onSearch }) => {
     }
   };
 
+  // Similar suggestions logic for the "To" field
   const handleToChange = (e) => {
     const value = e.target.value;
     setTo(value);
@@ -53,6 +61,7 @@ const FlightSearch = ({ onSearch }) => {
     }
   };
 
+  // Form submit: validate and call `onSearch` with normalized params
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!from || !to || !departure) {
@@ -72,6 +81,7 @@ const FlightSearch = ({ onSearch }) => {
     });
   };
 
+  // Passenger controls: increment/decrement with clamping to sensible values
   const handleAdultIncrement = () => {
     setAdults(prev => prev + 1);
   };
@@ -88,6 +98,7 @@ const FlightSearch = ({ onSearch }) => {
     setChildren(prev => prev > 0 ? prev - 1 : 0);
   };
 
+  // Returns a short summary string for passengers, e.g. "2 Passengers (1 Adult, 1 Child)"
   const getPassengerSummary = () => {
     const total = adults + children;
     let summary = `${total} Passenger${total > 1 ? 's' : ''}`;
