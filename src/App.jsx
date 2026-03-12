@@ -4,15 +4,22 @@ import "./App.css";
 import FlightSearch from "./components/FlightSearch.jsx";
 import FlightResults from "./components/FlightResults.jsx";
 
+// Backend URL for development; change as needed for production
 const BACKEND_URL = "http://localhost:5000";
 
+// Root application component
 function App() {
+  // App-level state
   const [flights, setFlights] = useState([]);
   const [loading, setLoading] = useState(false);
+  // Track the passenger counts used in the most recent search
   const [searchPassengers, setSearchPassengers] = useState({ adults: 1, children: 0 });
   const [cart, setCart] = useState([]);
+  // viewMode: "home" shows search, "cart" shows the cart page
   const [viewMode, setViewMode] = useState("home");
 
+  // Performs the flight search by calling the backend API.
+  // `params` is expected to include `from`, `to`, `departure`, `adults`, `children`, etc.
   const handleSearch = async (params) => {
     const { from, to, departure, returnDate, adults = 1, children = 0, tripType, travel_class } = params;
     setLoading(true);
@@ -20,22 +27,26 @@ function App() {
       const res = await axios.get(`${BACKEND_URL}/api/flights`, {
         params: { from, to, departure, returnDate, passengers: adults + children, tripType, travel_class },
       });
+      // Normalize response: expect `res.data.flights` but gracefully handle missing values
       setFlights(res.data.flights || []);
       setSearchPassengers({ adults, children });
     } catch (err) {
+      // Keep error handling simple for now; the UI shows an alert
       alert("No flights found");
     } finally {
       setLoading(false);
     }
   };
 
+  // Fetch persisted cart from backend (if available)
   const fetchCart = async () => {
     try {
       const res = await axios.get(`${BACKEND_URL}/api/cart`);
       setCart(res.data.cart || []);
-    } catch (err) { /* ignore */ }
+    } catch (err) { /* ignore errors during fetch */ }
   };
 
+  // Add a selected flight group to the cart, both local state and backend
   const addToCart = async (fullFlightGroup) => {
     const item = {
       id: `cart-${Date.now()}`,
@@ -44,18 +55,20 @@ function App() {
       passengerChildren: searchPassengers.children,
     };
     setCart(prev => [...prev, item]);
+    // Switch to cart view and update browser history
     setViewMode("cart");
     window.history.pushState({}, "", "/cart");
+    // Try to persist to the backend but don't block on failure
     axios.post(`${BACKEND_URL}/api/cart`, item).catch(() => {});
   };
 
+  // Remove item from cart locally and on backend
   const removeFromCart = (id) => {
     setCart(prev => prev.filter(i => i.id !== id));
-    axios.delete(`${BACKEND_URL}/api/cart/${id}`).catch(() => 
-      
-      {});
+    axios.delete(`${BACKEND_URL}/api/cart/${id}`).catch(() => {});
   };
 
+  // On mount: load cart and set view based on URL path
   useEffect(() => {
     fetchCart();
     if (window.location.pathname === "/cart") setViewMode("cart");
@@ -64,7 +77,7 @@ function App() {
     return () => window.removeEventListener("popstate", onPop);
   }, []);
 
-  // ROBUST HELPERS (works with any API format)
+  // Helper utilities — resilient to different API shapes
   const getAirportCode = (airport) => {
     if (!airport) return "??";
     return airport.code || airport.iata || airport.icao || airport.id || "??";
@@ -119,6 +132,7 @@ function App() {
 
   const getClassName = (code) => ["Economy", "Premium Economy", "Business", "First Class"][Number(code) - 1] || "Economy";
 
+  // Render
   return (
     <>
       <nav className="navbar">
@@ -137,7 +151,9 @@ function App() {
 
         {viewMode === "home" ? (
           <>
+            {/* Search form */}
             <FlightSearch onSearch={handleSearch} />
+            {/* Results list (or loading state) */}
             {loading ? <p>Loading...</p> : <FlightResults flights={flights} adults={searchPassengers.adults} children={searchPassengers.children} addToCart={addToCart} />}
           </>
         ) : (
@@ -157,7 +173,6 @@ function App() {
 
               {cart.length === 0 ? (
                 <div className="empty-cart-modern">
-
                   <h3>Your cart is empty</h3>
                 </div>
               ) : (
