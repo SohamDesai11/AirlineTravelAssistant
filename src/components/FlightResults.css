@@ -1,48 +1,51 @@
 .flight-results {
-  width: 90%;
+  width: 95%;
+  max-width: 1200px;
   margin: 20px auto;
   font-family: Arial, sans-serif;
 }
 
-
 .results-title {
   text-align: center;
   margin-bottom: 20px;
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   font-weight: bold;
 }
 
 .no-flights-text {
   text-align: center;
   margin-top: 30px;
-  font-size: 1.1rem;
+  font-size: 1rem;
 }
 
 .flight-card {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
   background: #fff;
   border-radius: 12px;
-  padding: 20px 30px;
+  padding: 15px 20px;
   margin-bottom: 16px;
   box-shadow: 0 4px 15px rgba(0,0,0,0.3);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   font-family: "Inter", sans-serif;
-
+  gap: 12px;
 }
 
 .flight-card:hover {
-  transform: scale(1.01);
+  transform: translateY(-4px);
   box-shadow: 0 6px 18px rgba(0,0,0,0.1);
 }
 
 /* Left side layout */
 .flight-left {
   display: flex;
-  align-items: center;
-  justify-content: space-between; /* Spread airline info and time section */
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
   width: 100%;
+  margin-bottom: 12px;
 }
 
 .airline-section {
@@ -76,9 +79,12 @@
 .flight-time-section {
   display: flex;
   align-items: center;
-  justify-content: center;
-  flex: 1; /* Take available space */
-  gap: 60px;
+  justify-content: space-between;
+  flex: 1;
+  gap: 20px;
+  width: 100%;
+  margin-bottom: 12px;
+  overflow: visible; /* ← ADD: so labels aren't clipped */
 }
 
 .time-block {
@@ -86,12 +92,12 @@
 }
 
 .flight-time {
-  font-size: 1.2rem;
+  font-size: 1rem;
   font-weight: bold;
 }
 
 .airport-code {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   color: #555;
 }
 
@@ -99,14 +105,18 @@
   display: flex;
   align-items: center;
   position: relative;
+  flex: 1;          /* ← ADD: lets it grow to fill space */
+  min-width: 80px;  /* ← ADD: prevents it from collapsing */
+  margin: 28px 0;   /* ← ADD: vertical room for top/bottom labels */
 }
 
 .line {
-  width: 80px;
-  height: 3px;
+  flex: 1;
+  height: 2px;
   background-color: black;
   margin: 0 5px;
   border-radius: 2px;
+  min-width: 30px;
 }
 
 .circle {
@@ -122,27 +132,32 @@
 
 .duration-text {
   position: absolute;
-  top: -25px;
+  top: -22px;
   left: 50%;
   transform: translateX(-50%);
   font-size: 0.8rem;
   color: #333;
   text-align: center;
+  white-space: nowrap; /* ← ADD: prevents wrapping */
 }
 
 /* Right side (price + button) */
 .flight-right {
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 15px;
+  flex-wrap: wrap;
 }
 
 .price-box {
   border: 2px solid #00a65a;
   border-radius: 8px;
   text-align: center;
-  padding: 8px 16px;
-  margin-bottom: 8px;
+  padding: 6px 12px;
+  margin-bottom: 0;
 }
 
 .best-deal {
@@ -152,13 +167,13 @@
 }
 
 .price {
-  font-size: 1.4rem;
+  font-size: 1.1rem;
   color: #00a65a;
   font-weight: bold;
 }
 
 .per-person {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   color: gray;
 }
 
@@ -167,10 +182,11 @@
   color: white;
   font-weight: bold;
   border: none;
-  padding: 10px 20px;
+  padding: 8px 16px;
   border-radius: 8px;
   cursor: pointer;
   transition: background 0.2s;
+  white-space: nowrap;
 }
 
 .select-btn:hover {
@@ -179,14 +195,13 @@
 
 .layover-text {
   position: absolute;
-  top: 25px;          /* Moves the text BELOW the path */
+  top: 16px;         /* ← CHANGE from 25px to 16px */
   left: 50%;
   transform: translateX(-50%);
   font-size: 0.85rem;
   color: #444;
   white-space: nowrap;
 }
-
 
 /* Expand/collapse button */
 .aircraft-toggle {
@@ -243,3 +258,316 @@
   color: #888;
 }
 
+/* Responsive Media Queries */
+@media (max-width: 1024px) {
+  .flight-time-section {
+    gap: 15px;
+  }
+  
+  .line {
+    min-width: 20px;
+  }
+  
+  .plane-icon {
+    font-size: 20px;
+  }
+  
+  .airline-name {
+    font-size: 0.95rem;
+  }
+  
+  .flight-number {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .flight-results {
+    width: 98%;
+  }
+  
+  .results-title {
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+  }
+  
+  .no-flights-text {
+    font-size: 0.95rem;
+  }
+  
+  .flight-card {
+    padding: 15px;
+    margin-bottom: 15px;
+    gap: 12px;
+  }
+  
+  .flight-left {
+    margin-bottom: 0;
+  }
+  
+  .airline-section {
+    gap: 8px;
+    margin-bottom: 8px;
+    width: 100%;
+  }
+  
+  .airline-logo {
+    width: 35px;
+    height: 35px;
+  }
+  
+  .plane-icon {
+    font-size: 18px;
+  }
+  
+  .airline-name {
+    font-size: 0.9rem;
+  }
+  
+  .flight-number {
+    font-size: 0.8rem;
+  }
+  
+  .flight-time-section {
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  
+  .flight-time {
+    font-size: 0.95rem;
+  }
+  
+  .airport-code {
+    font-size: 0.8rem;
+  }
+  
+  .circle {
+    width: 8px;
+    height: 8px;
+    border-width: 1.5px;
+  }
+  
+  .duration-text {
+    font-size: 0.7rem;
+    top: -20px;
+  }
+  
+  .layover-text {
+    font-size: 0.75rem;
+    top: 20px;
+  }
+  
+  .flight-right {
+    gap: 10px;
+    margin-top: 8px;
+  }
+  
+  .price-box {
+    padding: 8px 12px;
+    order: 1;
+  }
+  
+  .price {
+    font-size: 0.95rem;
+  }
+  
+  .per-person {
+    font-size: 0.7rem;
+  }
+  
+  .select-btn {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    order: 2;
+  }
+  
+  .best-deal {
+    font-size: 0.7rem;
+  }
+  
+  .aircraft-toggle {
+    font-size: 0.8rem;
+  }
+  
+  .aircraft-info {
+    padding: 10px;
+    margin-top: 8px;
+  }
+  
+  .aircraft-title {
+    font-size: 0.95rem;
+  }
+  
+  .aircraft-details {
+    font-size: 0.8rem;
+  }
+  
+  .amenities-list li {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .flight-results {
+    width: 100%;
+    margin: 10px auto;
+  }
+  
+  .results-title {
+    font-size: 0.95rem;
+    margin-bottom: 10px;
+  }
+  
+  .no-flights-text {
+    font-size: 0.9rem;
+    margin-top: 20px;
+  }
+  
+  .flight-card {
+    padding: 12px;
+    margin-bottom: 12px;
+    gap: 10px;
+  }
+  
+  .flight-card:hover {
+    transform: none;
+  }
+  
+  .flight-left {
+    margin-bottom: 0;
+    width: 100%;
+  }
+  
+  .airline-section {
+    gap: 6px;
+    margin-bottom: 6px;
+    width: 100%;
+  }
+  
+  .airline-logo {
+    width: 30px;
+    height: 30px;
+  }
+  
+  .plane-icon {
+    font-size: 16px;
+  }
+  
+  .airline-name {
+    font-size: 0.85rem;
+  }
+  
+  .flight-number {
+    font-size: 0.75rem;
+  }
+  
+   .flight-time-section {
+    flex-direction: row;        /* ← CHANGE back to row */
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+    width: 100%;
+    overflow: visible;
+  }
+  
+  .time-block {
+    text-align: center;         /* ← CHANGE back to center */
+    width: auto;                /* ← CHANGE from 100% */
+    flex-shrink: 0;
+  }
+  .flight-time {
+    font-size: 0.9rem;
+  }
+  
+  .airport-code {
+    font-size: 0.75rem;
+  }
+  
+  .flight-path {
+    flex: 1;
+    min-width: 60px;
+    margin: 24px 0;             /* ← vertical space for labels */
+    position: relative;
+  }
+
+  
+  .line {
+    min-width: 15px;
+  }
+  
+  .circle {
+    width: 7px;
+    height: 7px;
+    border-width: 1px;
+  }
+  
+   .duration-text {
+    font-size: 0.65rem;
+    top: -18px;
+    white-space: nowrap;
+  }
+
+  
+  .layover-text {
+    font-size: 0.65rem;
+    top: 14px;                  /* ← tighter gap below line */
+    white-space: nowrap;
+  }
+  
+  .flight-right {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    gap: 8px;
+    margin-top: 6px;
+  }
+  
+  .price-box {
+    padding: 8px 10px;
+    width: 100%;
+    order: 1;
+  }
+  
+  .price {
+    font-size: 0.9rem;
+  }
+  
+  .per-person {
+    font-size: 0.65rem;
+  }
+  
+  .select-btn {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 0.85rem;
+    order: 2;
+  }
+  
+  .best-deal {
+    font-size: 0.65rem;
+  }
+  
+  .aircraft-toggle {
+    font-size: 0.75rem;
+  }
+  
+  .aircraft-info {
+    padding: 8px;
+    margin-top: 8px;
+  }
+  
+  .aircraft-title {
+    font-size: 0.9rem;
+    margin-bottom: 3px;
+  }
+  
+  .aircraft-details {
+    font-size: 0.75rem;
+    margin-bottom: 6px;
+  }
+  
+  .amenities-list li {
+    font-size: 0.75rem;
+    padding: 2px 0;
+  }
+}

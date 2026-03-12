@@ -12,14 +12,14 @@ body {
 .app-container {
   min-height: 100vh;
   text-align: center;
-  padding: 40px 20px;
+  padding: 20px 15px;
 }
 
 /* Title */
 .app-title {
-  font-size: 2.5rem;
+  font-size: 1.8rem;
   font-weight: 700;
-  margin-bottom: 40px;
+  margin-bottom: 30px;
   color: #000000;
 }
 
@@ -33,51 +33,52 @@ body {
 
 /* Flight Search Section */
 .flight-search {
-  width: 1174px;
-  height: 287px;
+  width: 100%;
+  max-width: 1200px;
+  height: auto;
   margin: 0 auto 40px auto;
   background-color: #ffffff;
   border-radius: 15px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  padding: 30px;
+  padding: 20px;
 }
 
 /* Flight Results */
 .flight-results {
-  width: 90%;
+  width: 95%;
+  max-width: 1200px;
   margin: 0 auto;
   text-align: left;
 }
 
-/* Center the “Find Your Perfect Flight” heading */
+/* Center the "Find Your Perfect Flight" heading */
 h1 {
-  font-size: 2.5rem;
+  font-size: 1.8rem;
   color: #004aad;
   font-weight: bold;
-  margin-top: 40px;
+  margin-top: 30px;
 }
 
 .logo-container {
   position: relative;
-  top: 20px;
-  left: 20px;
+  top: 10px;
+  left: 10px;
   display: flex;
   align-items: center;
-  gap: 10px;          /* space between logo and text */
+  gap: 8px;
   z-index: 100;
   font-family: "Inter", sans-serif;
   font-weight: 600;
 }
 
 .logo-container img {
-  height: 50px;       /* adjust as needed */
+  height: 40px;
   width: auto;
 }
 
-
 .logo-text {
-  font-size: 2rem;
-  color: #000000;     /* matches your h1 color */
+  font-size: 1.4rem;
+  color: #000000;
   text-shadow: 0 1px 2px rgba(0,0,0,0.1);
   margin-bottom: -10px;
 }
@@ -91,10 +92,10 @@ h1 {
 }
 
 .small-paragraph {
-  font-size: 1.2rem;
+  font-size: 1rem;
   color: #000000;
-  margin-top: -20px;
-  margin-bottom: 30px;
+  margin-top: -15px;
+  margin-bottom: 25px;
 }
 
 /* Cart indicator in navbar */
@@ -139,9 +140,10 @@ h1 {
 
 .cart-panel {
   position: fixed;
-  right: 20px;
+  right: 15px;
   top: 70px;
-  width: 320px;
+  width: 90%;
+  max-width: 320px;
   max-height: 60vh;
   overflow: auto;
   background: white;
@@ -189,9 +191,9 @@ h1 {
   align-items: center;
 }
 
-.cart-header-modern h2 { margin: 0; font-size: 1.9rem; font-weight: 700; }
+.cart-header-modern h2 { margin: 0; font-size: 1.5rem; font-weight: 700; }
 
-.cart-actions-modern { display: flex; gap: 14px; }
+.cart-actions-modern { display: flex; gap: 10px; flex-wrap: wrap; }
 .clear-btn-modern, .checkout-btn-modern {
   padding: 12px 24px;
   border-radius: 12px;
@@ -249,8 +251,8 @@ h1 {
   text-align: center;
   z-index: 2;
 }
-.timeline-point .time { font-size: 1.5rem; font-weight: 700; color: #1e293b; }
-.timeline-point .airport { font-size: 1.1rem; color: #475569; margin-top: 4px; }
+.timeline-point .time { font-size: 1.2rem; font-weight: 700; color: #1e293b; }
+.timeline-point .airport { font-size: 0.9rem; color: #475569; margin-top: 4px; }
 
 .timeline-connector {
   position: absolute;
@@ -275,30 +277,189 @@ h1 {
 
 .flight-price-final {
   text-align: right;
-  margin-top: 20px;
-  font-size: 1.8rem;
+  margin-top: 15px;
+  font-size: 1.4rem;
   font-weight: 800;
   color: #059669;
 }
 .flight-price-final small {
   display: block;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   color: #64748b;
-  margin-top: 6px;
+  margin-top: 4px;
   font-weight: normal;
 }
 
 .cart-total-summary {
   background: #0f172a;
   color: white;
-  padding: 32px;
+  padding: 20px;
   text-align: right;
 }
 .total-line {
   display: flex;
   justify-content: space-between;
-  font-size: 1.4rem;
-  margin-bottom: 16px;
+  font-size: 1.1rem;
+  margin-bottom: 12px;
 }
-.grand-total { font-size: 2.2rem; font-weight: 800; color: #10b981; }
-.secure-badge { font-size: 0.95rem; opacity: 0.9; margin-top: 12px; }
+.grand-total { font-size: 1.7rem; font-weight: 800; color: #10b981; }
+.secure-badge { font-size: 0.85rem; opacity: 0.9; margin-top: 10px; }
+
+/* Responsive Media Queries */
+@media (max-width: 768px) {
+  .app-container {
+    padding: 15px 12px;
+  }
+  
+  .app-title {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+  }
+  
+  .flight-search {
+    padding: 15px;
+    margin-bottom: 30px;
+  }
+  
+  .small-paragraph {
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+  }
+  
+  h1 {
+    font-size: 1.4rem;
+    margin-top: 20px;
+  }
+  
+  .logo-container {
+    top: 5px;
+    left: 5px;
+    gap: 6px;
+  }
+  
+  .logo-container img {
+    height: 35px;
+  }
+  
+  .logo-text {
+    font-size: 1.1rem;
+  }
+  
+  .cart-icon {
+    font-size: 1.2rem;
+  }
+  
+  .cart-container {
+    font-size: 18px;
+    right: 12px;
+    top: 10px;
+    gap: 4px;
+  }
+  
+  .flight-summary-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .flight-route-timeline {
+    margin: 15px 0;
+  }
+  
+  .cart-header-modern {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 20px 20px;
+  }
+  
+  .cart-header-modern h2 {
+    font-size: 1.3rem;
+  }
+  
+  .cart-actions-modern {
+    width: 100%;
+    gap: 8px;
+  }
+  
+  .clear-btn-modern,
+  .checkout-btn-modern {
+    flex: 1;
+    padding: 10px 16px;
+    font-size: 0.9rem;
+  }
+  
+  .detailed-cart-flight {
+    padding: 16px;
+    margin-bottom: 15px;
+  }
+  
+  .cart-items-modern {
+    padding: 16px;
+  }
+  
+  .flights-meta-info {
+    gap: 10px;
+  }
+  
+  .empty-cart-modern {
+    padding: 40px 20px;
+  }
+  
+  .empty-icon {
+    font-size: 3rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .app-container {
+    padding: 12px 10px;
+  }
+  
+  .app-title {
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+  }
+  
+  .flight-search {
+    padding: 12px;
+    margin-bottom: 20px;
+  }
+  
+  .small-paragraph {
+    font-size: 0.85rem;
+    margin-bottom: 15px;
+  }
+  
+  h1 {
+    font-size: 1.1rem;
+    margin-top: 15px;
+  }
+  
+  .logo-container {
+    top: 0;
+    left: 0;
+  }
+  
+  .logo-container img {
+    height: 30px;
+  }
+  
+  .logo-text {
+    font-size: 0.9rem;
+  }
+  
+  .flight-summary-header {
+    flex-direction: column;
+  }
+  
+  .airline-info {
+    width: 100%;
+  }
+  
+  .clear-btn-modern,
+  .checkout-btn-modern {
+    width: 100%;
+    margin-bottom: 8px;
+  }
+}
