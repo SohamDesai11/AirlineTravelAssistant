@@ -5,7 +5,7 @@ import FlightSearch from "./components/FlightSearch.jsx";
 import FlightResults from "./components/FlightResults.jsx";
 
 // Backend URL for development; change as needed for production
-const BACKEND_URL = "http://localhost:5000";
+const BACKEND_URL = "https://airlinetravelassistant-1.onrender.com";
 
 // Root application component
 function App() {
