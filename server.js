@@ -1,6 +1,9 @@
 import express from "express";
 import axios from "axios";
 import cors from "cors";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const app = express();
 app.use(cors());
@@ -31,7 +34,7 @@ app.get("/api/flights", async (req, res) => {
         travel_class: serpTravelClass,
         hl: "en",
         gl: "us",
-        api_key: '0ab784c3a40c6a61f286c3baec46bb9c94e6a397d54ed3c2fc255543e155421a',
+        api_key: process.env.SERPAPI_KEY,
       },
     });
 
